@@ -3,7 +3,7 @@ import { TelegrafModule } from 'nestjs-telegraf';
 import { BotUpdate } from './bot.update';
 
 import { Config } from './config';
-import { session } from 'telegraf';
+import { session, Telegraf } from 'telegraf';
 
 @Module({
   imports: [
@@ -12,6 +12,14 @@ import { session } from 'telegraf';
       middlewares: [session()],
     }),
   ],
-  providers: [BotUpdate],
+  providers: [
+    BotUpdate,
+    {
+      provide: 'TelegrafBot',
+      useFactory: () => {
+        return new Telegraf(Config.TELEGRAM_TOKEN);
+      },
+    },
+  ],
 })
 export class BotModule {}
